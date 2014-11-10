@@ -16,7 +16,7 @@ public class SuffixTreeTests {
     private WordChainSuffixTree wordChainSuffixTree;
 
     @Test
-    public void test() throws IOException {
+    public void test() throws IOException, InterruptedException {
         wordChainSuffixTree = new WordChainSuffixTree("beef", "sale", 6);
         wordChainSuffixTree.startTree();
         List<String> wordChains = wordChainSuffixTree.getSuccessfulChains();

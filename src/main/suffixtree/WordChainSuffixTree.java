@@ -5,12 +5,14 @@ import main.wordutils.WordList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by oking on 08/11/14.
  */
 public class WordChainSuffixTree {
-
     private String startWord;
     private String lastWord;
     private List<String> dictionary;
@@ -30,16 +32,39 @@ public class WordChainSuffixTree {
         return wordList.createValidWordList(wordSize);
     }
 
-    public void startTree() throws IOException {
 
-        long startTime = System.currentTimeMillis();
-
+    public void startTree() throws IOException, InterruptedException {
         Node startNode = new Node(startWord);
-        buildTree(startNode);
 
-        long stopTime = System.currentTimeMillis();
-        long runTime = stopTime - startTime;
-        System.out.println("Run time: " + runTime);
+        // Single-Threaded
+
+        //buildTree(startNode);
+
+        // Multi-Threaded
+
+        createChildNodes(startNode);
+
+        ExecutorService threadPool = Executors.newFixedThreadPool(4);
+        for (Node node : startNode.childNodes){
+            threadPool.execute(new BranchThread(node));
+        }
+
+        threadPool.shutdown();
+        threadPool.awaitTermination(600, TimeUnit.SECONDS); // 10 Min limit
+
+    }
+
+    private class BranchThread implements Runnable{
+
+        private Node node;
+        BranchThread(Node node){
+            this.node = node;
+        }
+
+        @Override
+        public void run() {
+            buildTree(node);
+        }
 
     }
 
@@ -70,14 +95,14 @@ public class WordChainSuffixTree {
             traversalNode = traversalNode.parent;
         }
 
-        StringBuilder stringBuilder = new StringBuilder(" | ");
+        StringBuilder stringBuilder = new StringBuilder("");
         for (int i = path.size() - 1; i >= 0 ; i--) {
             stringBuilder
                     .append(" ")
                     .append(path.get(i))
                     .append(" ");
         }
-        return stringBuilder.append(" | ").toString();
+        return stringBuilder.append("").toString();
     }
 
     private int findDepthOfNodeInTree(Node node){
@@ -110,14 +135,19 @@ public class WordChainSuffixTree {
 
     }
 
+
     public List<String> getSuccessfulChains() {
         return successfulChains;
     }
 
+    public String getStartWord() {
+        return startWord;
+    }
 
     class Node{
         private String word;
         private Node parent;
+
         List<Node> childNodes;
 
         Node(String word){
@@ -125,12 +155,12 @@ public class WordChainSuffixTree {
             this.parent = null;
             childNodes = new ArrayList<>();
         }
-
         Node(String word, Node parent){
             this.word = word;
             this.parent = parent;
             this.childNodes = new ArrayList<>();
         }
+
     }
 
 }
