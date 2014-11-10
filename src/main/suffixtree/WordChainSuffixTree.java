@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by oking on 08/11/14.
  */
-public class SuffixTreeBuilder {
+public class WordChainSuffixTree {
 
     private String startWord;
     private String lastWord;
@@ -17,7 +17,7 @@ public class SuffixTreeBuilder {
     private List<String> successfulChains;
     private int depthLimit;
 
-    public SuffixTreeBuilder(String startWord, String lastWord, int depthLimit) throws IOException {
+    public WordChainSuffixTree(String startWord, String lastWord, int depthLimit) throws IOException {
         this.lastWord = lastWord;
         this.startWord = startWord;
         this.successfulChains = new ArrayList<>();
@@ -32,8 +32,14 @@ public class SuffixTreeBuilder {
 
     public void startTree() throws IOException {
 
+        long startTime = System.currentTimeMillis();
+
         Node startNode = new Node(startWord);
         buildTree(startNode);
+
+        long stopTime = System.currentTimeMillis();
+        long runTime = stopTime - startTime;
+        System.out.println("Run time: " + runTime);
 
     }
 
@@ -47,37 +53,37 @@ public class SuffixTreeBuilder {
             if (findDepthOfNodeInTree(node) <= depthLimit){  //Limit of length of chain. Compute Time increase massively at each step.
 
                 createChildNodes(node);
-                if (!node.childNodes.isEmpty()){
 
+                if (!node.childNodes.isEmpty()){
                     node.childNodes.forEach(this::buildTree);
                 }
             }
         }
-
     }
 
-    private String buildPathFromNodeToRootNode(Node node){
-        Node currentNode = node;
+    private String buildPathFromNodeToRootNode(Node tailNode){
+        Node traversalNode = tailNode;
         List<String> path = new ArrayList<>();
+
+        while (traversalNode != null){
+            path.add(traversalNode.word);
+            traversalNode = traversalNode.parent;
+        }
+
         StringBuilder stringBuilder = new StringBuilder(" | ");
-
-        while (currentNode != null){
-
-            path.add(currentNode.word);
-            currentNode = currentNode.parent;
-
-        }
-
         for (int i = path.size() - 1; i >= 0 ; i--) {
-            stringBuilder.append(" ").append(path.get(i)).append(" ");
+            stringBuilder
+                    .append(" ")
+                    .append(path.get(i))
+                    .append(" ");
         }
-
         return stringBuilder.append(" | ").toString();
     }
 
     private int findDepthOfNodeInTree(Node node){
         Node currentNode = node;
         int depth = 1;
+
         while (currentNode != null){
             depth++;
             currentNode = currentNode.parent;

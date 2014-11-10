@@ -1,6 +1,6 @@
 package tests;
 
-import main.suffixtree.SuffixTreeBuilder;
+import main.suffixtree.WordChainSuffixTree;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,13 +13,13 @@ import static junit.framework.TestCase.assertTrue;
  */
 public class SuffixTreeTests {
 
-    private SuffixTreeBuilder suffixTreeBuilder;
+    private WordChainSuffixTree wordChainSuffixTree;
 
     @Test
     public void test() throws IOException {
-        suffixTreeBuilder = new SuffixTreeBuilder("beef", "sale", 6);
-        suffixTreeBuilder.startTree();
-        List<String> wordChains = suffixTreeBuilder.getSuccessfulChains();
+        wordChainSuffixTree = new WordChainSuffixTree("beef", "sale", 6);
+        wordChainSuffixTree.startTree();
+        List<String> wordChains = wordChainSuffixTree.getSuccessfulChains();
         assertTrue(wordChains.size() == 4);
     }
 }

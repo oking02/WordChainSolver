@@ -1,6 +1,6 @@
 package main;
 
-import main.suffixtree.SuffixTreeBuilder;
+import main.suffixtree.WordChainSuffixTree;
 
 import java.io.IOException;
 
@@ -11,15 +11,16 @@ public class Launcher {
 
     public static void main(String[] args){
 
-        SuffixTreeBuilder suff;
+
+        WordChainSuffixTree wordChainTree;
 
         if (args.length == 0){
 
             try {
 
-                suff = new SuffixTreeBuilder("lead", "gold", 4);
-                suff.startTree();
-                suff.getSuccessfulChains().forEach(System.out::println);
+                wordChainTree = new WordChainSuffixTree("lead", "gold", 4);
+                wordChainTree.startTree();
+                wordChainTree.getSuccessfulChains().forEach(System.out::println);
 
             } catch (IOException e) {
                 System.out.println("Can't find dictionary file");
@@ -30,9 +31,9 @@ public class Launcher {
 
             try {
 
-                suff = new SuffixTreeBuilder(args[0], args[1], Integer.parseInt(args[2]));
-                suff.startTree();
-                suff.getSuccessfulChains().forEach(System.out::println);
+                wordChainTree = new WordChainSuffixTree(args[0], args[1], Integer.parseInt(args[2]));
+                wordChainTree.startTree();
+                wordChainTree.getSuccessfulChains().forEach(System.out::println);
 
             } catch (IOException e) {
                 System.out.println("Can't find dictionary file");
