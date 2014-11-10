@@ -5,7 +5,9 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertFalse;
@@ -36,5 +38,12 @@ public class WordListTests {
         field.set(wordList, "wrong");
         wordList.createValidWordList(2);
 
+    }
+
+    @Test
+    public void testForDuplication() throws IOException {
+        List<String> listOfWords = wordList.createValidWordList(2);
+        Set<String> setOfWords = new HashSet<>(wordList.createValidWordList(2));
+        assertTrue(listOfWords.size() == setOfWords.size());
     }
 }

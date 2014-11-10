@@ -21,7 +21,7 @@ public class WordList {
 
         while ((line = in.readLine()) != null){
 
-            if (line.length() == wordLength){ //TODO need to fix duplicate entries.
+            if (line.length() == wordLength){
                 words.add(line.toLowerCase());
             }
 
