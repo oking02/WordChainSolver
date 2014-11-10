@@ -14,13 +14,13 @@ public class SuffixTreeBuilder {
     private String startWord;
     private String lastWord;
     private List<String> dictionary;
-    private List<String> succesfulChains;
+    private List<String> successfulChains;
     private int depthLimit;
 
     public SuffixTreeBuilder(String startWord, String lastWord, int depthLimit) throws IOException {
         this.lastWord = lastWord;
         this.startWord = startWord;
-        this.succesfulChains = new ArrayList<>();
+        this.successfulChains = new ArrayList<>();
         this.dictionary = buildDictionary(startWord.length());
         this.depthLimit = depthLimit;
     }
@@ -40,11 +40,11 @@ public class SuffixTreeBuilder {
     private void buildTree(Node node){
 
         if (node.word.equals(lastWord) ){
-            succesfulChains.add(buildPath(node));
+            successfulChains.add(buildPathFromNodeToRootNode(node));
         }
         else {
 
-            if (findDepth(node) <= depthLimit){  //Limit of length of chain. Compute Time increase massively at each step.
+            if (findDepthOfNodeInTree(node) <= depthLimit){  //Limit of length of chain. Compute Time increase massively at each step.
 
                 createChildNodes(node);
                 if (!node.childNodes.isEmpty()){
@@ -56,7 +56,7 @@ public class SuffixTreeBuilder {
 
     }
 
-    private String buildPath(Node node){
+    private String buildPathFromNodeToRootNode(Node node){
         Node currentNode = node;
         List<String> path = new ArrayList<>();
         StringBuilder stringBuilder = new StringBuilder(" | ");
@@ -75,7 +75,7 @@ public class SuffixTreeBuilder {
         return stringBuilder.append(" | ").toString();
     }
 
-    private int findDepth(Node node){
+    private int findDepthOfNodeInTree(Node node){
         Node currentNode = node;
         int depth = 1;
         while (currentNode != null){
@@ -104,8 +104,8 @@ public class SuffixTreeBuilder {
 
     }
 
-    public List<String> getSuccesfulChains() {
-        return succesfulChains;
+    public List<String> getSuccessfulChains() {
+        return successfulChains;
     }
 
 
