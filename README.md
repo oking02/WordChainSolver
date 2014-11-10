@@ -11,5 +11,5 @@ following steps:
 
 LEAD → LOAD → GOAD → GOLD
 
-In the launcher class, the thirst variable in the SuffixTreeBuilder set the limit of the chain length. 
+In the launcher class, the third variable in the SuffixTreeBuilder constructor sets the limit of the chain length. 
 Currently set to 7 as any larger takes to long to compute.
