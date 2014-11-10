@@ -24,3 +24,23 @@ arguments can be added.
 
 For example:  java -jar WordChainSolver.jar time gold 5.
 
+Warning
+========
+
+Any more than a chain length of 6 is currently using more than the 8GB of RAM on my Ubuntu laptop.
+
+Compute Time
+============
+
+Using 8GB of RAM and a i7-4500U
+
+First Word = lead
+Last Word = gold
+
+Chain Length ||  Time in Milliseconds
+
+	4	     ||       123
+	5	     ||       660
+	6	     ||       9091
+	7	     ||       java.lang.OutOfMemoryError: Java heap space
+

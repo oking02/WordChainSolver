@@ -18,12 +18,14 @@ public class Launcher {
 
             try {
 
-                wordChainTree = new WordChainSuffixTree("lead", "gold", 4);
+                wordChainTree = new WordChainSuffixTree("lead", "gold", 7);
                 wordChainTree.startTree();
                 wordChainTree.getSuccessfulChains().forEach(System.out::println);
 
             } catch (IOException e) {
                 System.out.println("Can't find dictionary file");
+            } catch (OutOfMemoryError e){
+                System.out.println("Insufficient Memory to compute the tree.");
             }
 
         }
@@ -37,6 +39,8 @@ public class Launcher {
 
             } catch (IOException e) {
                 System.out.println("Can't find dictionary file");
+            } catch (OutOfMemoryError e){
+                System.out.println("Insufficient Memory to compute the tree.");
             }
 
         }
