@@ -35,9 +35,10 @@ Compute Time
 Using 8GB of RAM and a i7-4500U
 
 First Word = lead
+
 Last Word = gold
 
-Chain Length ||  Time in Milliseconds
+Chain Length     Time in Milliseconds
 
 	4	     ||       123
 	5	     ||       660
