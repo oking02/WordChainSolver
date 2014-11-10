@@ -44,14 +44,12 @@ public class SuffixTreeBuilder {
         }
         else {
 
-            if (findDepth(node) < depthLimit){  //Limit of length of chain. Compute Time increase massively at each step.
+            if (findDepth(node) <= depthLimit){  //Limit of length of chain. Compute Time increase massively at each step.
 
                 createChildNodes(node);
                 if (!node.childNodes.isEmpty()){
 
-                    for (Node nodes : node.childNodes){
-                        buildTree(nodes);
-                    }
+                    node.childNodes.forEach(this::buildTree);
                 }
             }
         }
