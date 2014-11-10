@@ -38,7 +38,8 @@ First Word = lead
 
 Last Word = gold
 
-Chain Length     Time in Milliseconds
+Chain Length  ||  Time in Milliseconds
+
 	4	     ||       123
 	5	     ||       660
 	6	     ||       9091
