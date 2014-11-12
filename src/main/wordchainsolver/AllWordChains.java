@@ -107,7 +107,6 @@ public class AllWordChains {
             depth++;
             currentNode = currentNode.parent;
         }
-        assert depth <= depthLimit;
         return depth;
     }
 

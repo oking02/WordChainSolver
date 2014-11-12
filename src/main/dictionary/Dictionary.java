@@ -9,7 +9,7 @@ import java.util.*;
 public class Dictionary {
     private List<String> dictionary;
 
-    private final String LOCATION_OF_DICTIONARY_FILE = new File("").getAbsolutePath() + "/websters-dictionary.txt";
+    private final String LOCATION_OF_DICTIONARY_FILE = "websters-dictionary.txt";
 
     public Dictionary(int wordLength) throws IOException {
         this.dictionary = createValidWordList(wordLength);
