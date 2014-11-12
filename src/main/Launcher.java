@@ -1,17 +1,29 @@
 package main;
 
-import main.suffixtree.WordChainSuffixTree;
-import main.wordutils.WordChainSorting;
+import main.input.InputValidation;
+import main.input.WordChainInput;
+import main.output.Path;
+import main.dictionary.Dictionary;
+import main.output.PathInfo;
+import main.wordchainsolver.AllWordChains;
+import main.wordchainsolver.ShortestWordChain;
 
 import java.io.IOException;
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 /**
+ * Launcher for the word chain solver application.
+ * Provides two solution. Find the shortest chain and find all the chains.
+ * Finding all the chains can be computationally expensive so a chain length variable is given to limit it.
+ * However some combinations can result in a long comupte time and/or give a out of memory exception.
+ *
+ * Arguments
+ * For shortest - shortest firstword lastword
+ * For all - all fistword lastword chainLimit [p]
+ * [p] optional if you would like to print all chains.
  * Created by oking on 08/11/14.
  */
 public class Launcher {
@@ -20,72 +32,104 @@ public class Launcher {
 
         long startTime = System.currentTimeMillis();
 
-        WordChainSuffixTree wordChainTree = null;
-
-        if (args.length == 0){
-
-            try {
-
-                wordChainTree = new WordChainSuffixTree("lead", "gold", 6);
-                wordChainTree.startTree();
-               // wordChainTree.getSuccessfulChains().forEach(System.out::println);
-
-            } catch (IOException e) {
-                System.out.println("Can't find dictionary file");
-            } catch (OutOfMemoryError e){
-                System.out.println("Insufficient Memory to compute the tree.");
-            } catch (InterruptedException e) {
-                System.out.println("Executor Timeout");
-            }
-
-        }
-        else {
-
-            try {
-
-                wordChainTree = new WordChainSuffixTree(args[0], args[1], Integer.parseInt(args[2]));
-                wordChainTree.startTree();
-                //wordChainTree.getSuccessfulChains().forEach(System.out::println);
-
-
-
-            } catch (IOException e) {
-                System.out.println("Can't find dictionary file");
-            } catch (OutOfMemoryError e){
-                System.out.println("Insufficient Memory to compute the tree.");
-            } catch (InterruptedException e) {
-                System.out.println("Executor Timeout");
-            }
-
-        }
+        Launcher launcher = new Launcher();
+        launcher.launch(args);
 
         long stopTime = System.currentTimeMillis();
         long runTime = stopTime - startTime;
+        System.out.println("");
         System.out.println("Run time: " + runTime + "ms");
 
-        if (!wordChainTree.getSuccessfulChains().isEmpty()){
+    }
 
-            WordChainSorting wordChainSorting = new WordChainSorting(wordChainTree.getSuccessfulChains());
+    public void launch(String args[]){
 
-            System.out.println("Number of Possible Word Chains: " + wordChainSorting.numberOfWordChains());
-            System.out.println("Shortest Word Chain: " + wordChainSorting.findShortestWordChain());
+        try {
 
-            Map<Integer, Integer> occurancesOfChainLengths = wordChainSorting.occurances(wordChainTree.getStartWord().length());
+            WordChainInput input = new WordChainInput(args[1], args[2]);
+            Dictionary dictionary = new Dictionary(args[1].length());
+            validation(input, dictionary);
 
-            for (Integer ints : occurancesOfChainLengths.keySet()){
-                System.out.println("WordChain of size " + ints + " Frequency: " + occurancesOfChainLengths.get(ints));
+            switch (args[0]) {
+
+                case "shortest":
+                    ShortestWordChain shortestWordChain = new ShortestWordChain(input, dictionary);
+                    Path path = shortestWordChain.findShortestChain();
+
+                    if (path.getWordsInPath().isEmpty()) {
+                        System.out.println("No possible path");
+                    } else {
+                        path.prettyPrint();
+                    }
+                    break;
+
+                case "all":
+                    int depth = Integer.parseInt(args[3]);
+
+                    System.out.println("WARNING - Combinations of small word lengths and long chain lengths can use a large amount of memory.");
+                    System.out.println("Can take a large amount of time and/or cause a OutOfMemoryException");
+                    System.out.println("Additionally, it will time out after 10 minutes of operation.");
+                    System.out.println("");
+
+                    AllWordChains allWordChains = new AllWordChains(input, dictionary, depth);
+                    List<Path> paths = allWordChains.startTree();
+
+                    PathInfo pathInfo = new PathInfo(paths);
+
+                    System.out.println("One of the Shortest chains");
+                    pathInfo.findShortestWordChain().prettyPrint();
+                    System.out.println("");
+                    System.out.println("-----");
+
+                    System.out.println("One of the Longest chains");
+                    pathInfo.findLongestWordChain().prettyPrint();
+                    System.out.println("");
+                    System.out.println("-----");
+
+                    Map<Integer, Integer> frequencyOfLength = pathInfo.frequencyInfomation(depth);
+                    for (Integer i : frequencyOfLength.keySet()) {
+                        System.out.println("WordChain of size " + i + " Frequency: " + frequencyOfLength.get(i));
+                    }
+
+                    if (args[4] != null){
+                        if (args[4].equals("p")){
+                            for (Path validPath : paths){
+                                validPath.prettyPrint();
+                                System.out.println("");
+                                System.out.println("-");
+                            }
+                        }
+                        else {
+                            System.out.println("Enter p as the last argument to request the printing of all chains.");
+                        }
+                    }
+
+                    System.out.println("Enter p as the last argument to request the printing of all chains.");
+                    break;
+
+                default:
+                    System.out.println("Please add shortest or all as the first argument");
+                    break;
             }
 
 
-
-        }else {
-            System.out.println("No Word Chains Found. Try a higher chain length.");
+        } catch (IOException e) {
+            System.out.println("Can't find dictionary file");
+        } catch (OutOfMemoryError e){
+            System.out.println("Insufficient Memory to compute the tree.");
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
-
-
-
     }
+
+    private void validation(WordChainInput input, Dictionary dictionary){
+        InputValidation inputValidation = new InputValidation(dictionary);
+        inputValidation.isInputValid(input);
+    }
+
+
 
 
 }
