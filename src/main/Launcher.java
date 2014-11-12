@@ -91,7 +91,7 @@ public class Launcher {
                         System.out.println("WordChain of size " + i + " Frequency: " + frequencyOfLength.get(i));
                     }
 
-                    if (args[4] != null){
+                    if (args.length == 5){
                         if (args[4].equals("p")){
                             for (Path validPath : paths){
                                 validPath.prettyPrint();
@@ -102,9 +102,8 @@ public class Launcher {
                         else {
                             System.out.println("Enter p as the last argument to request the printing of all chains.");
                         }
-                    }
 
-                    System.out.println("Enter p as the last argument to request the printing of all chains.");
+                    }
                     break;
 
                 default:
