@@ -14,34 +14,26 @@ LEAD → LOAD → GOAD → GOLD
 Instructions
 ==============
 
-If imported into an IDE, it can be used by running the Launcher class. This will
-default to using lead, gold and 4 length chain as the default values. These
-can be changed in the launcher code or by adding run program arguments.
+If imported into an IDE, it can be used by running the Launcher class. Alternatively,
+if using the supplied jar it can be run from the commandline.
 
-Additionally it can be built into a jar and run from the commandline. In this case if no
-arguments are added it will default to lead, gold and 4. However you own
-arguments can be added.
+Two options
 
-For example:  java -jar WordChainSolver.jar time gold 5.
+Find Shortest Chain
 
-Warning
-========
+Fill return a single path. This will be the shortest possible chain found.
+There may be others of the same length. It will just return the first one of this
+length it finds.
 
-Any more than a chain length of 6 is currently using more than the 8GB of RAM on my Ubuntu laptop.
+Arguments - shortest firstWord lastWord
 
-Compute Time
-============
+Find All Chains
 
-Using 8GB of RAM and a i7-4500U
+Will return all possible valid word chains up to a specified length. Some
+combinations of length and words will result in a large amount to possible
+chains. As a result it can take a long time to compute and/or throw a
+OutOfMemory Exception. Additionaly it will timeout after 10 minutes.
 
-First Word = lead
+Arguments - all firstWord lastWord chainLength [p] -   [p] optional choice to print out all chains.
 
-Last Word = gold
-
-Chain Length  ||  Time in Milliseconds
-
-	4	     ||       123
-	5	     ||       660
-	6	     ||       9091
-	7	     ||       java.lang.OutOfMemoryError: Java heap space
 
